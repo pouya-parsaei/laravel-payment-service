@@ -17,14 +17,13 @@ class Saman implements GatewayInterface
         $this->callback = route('payment.verify', $this->getName());
     }
 
-    public function pay(Order $order)
+    public function pay(Order $order, int $amount)
     {
-        $this->redirectToBank($order);
+        $this->redirectToBank($order, $amount);
     }
 
-    private function redirectToBank($order)
+    private function redirectToBank($order, $amount)
     {
-        $amount = $order->amount + 10000;
         echo "<form id='samanpeyment' action='https://sep.shaparak.ir/payment.aspx' method='post'>
 		<input type='hidden' name='Amount' value='{$amount}' />
 		<input type='hidden' name='ResNum' value='{$order->code}'>
@@ -45,10 +44,10 @@ class Saman implements GatewayInterface
 
         $order = $this->getOrder($request->input('ResNum'));
 
-        $response = $order->amount + 10000;
+        $response = $order->payment->amount;
         $request->merge(['RefNum' => '45852525']);
 
-        return $response == ($order->amount + 10000)
+        return $response == $order->payment->amount
             ? $this->transactionSuccess($order, $request->input('RefNum'))
             : $this->transactionFailed();
     }

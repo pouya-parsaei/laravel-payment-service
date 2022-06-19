@@ -1,20 +1,49 @@
+@include('partials.validation')
 <div class="card bg-light">
     <div class="card-body">
         <h4>@lang('payment.cart summary')</h4>
         <hr>
         <div class="well">
             <table class='table'>
-                <tr>
-                    <td>@lang('payment.item total')</td>
-                    <td> {{number_format($basket->subTotal())}} @lang('payment.toman')</td>
-                </tr>
-                <tr>
-                    <td>@lang('payment.shipping')</td>
-                    <td> {{number_format(10000)}} @lang('payment.toman')</td>
-                </tr>
+                @foreach( $cost->getSummary() as $description=>$price)
+                    <tr>
+                        <td>{{ $description }}</td>
+                        <td>{{number_format($price)}} @lang('payment.toman')</td>
+                    </tr>
+                @endforeach
                 <tr>
                     <td>@lang('payment.basket total')</td>
-                    <td> {{number_format($basket->subTotal() + 10000 )}} @lang('payment.toman')</td>
+                    <td> {{number_format($cost->getTotalCost())}} @lang('payment.toman')</td>
+                </tr>
+                <tr>
+                    <td>@lang('payment.coupon')</td>
+                    <td>
+                        @if(session()->has('coupon'))
+                            <form method="POST" action="{{ route('coupons.destroy') }}">
+                                @csrf
+                                @method('delete')
+                                <div class="input-group">
+                                    <span>{{session()->get('coupon')->code}}</span>
+                                    <span class="input-group-btn">
+                                       <button class="btn btn-primary btn-sm ml-3"
+                                               type="submit">@lang('payment.remove')</button>
+                                   </span>
+                                </div>
+                            </form>
+                        @else
+
+                            <form action="{{ route('coupons.check') }}" method="post">
+                                @csrf
+                                <div class="input-group">
+                                    <input id='coupon' name='coupon' type="text" class="form-control">
+                                    <span class="input-group-btn">
+                                     <button id='coupon-apply' class="btn btn-primary ml-3"
+                                             type="submit">@lang('payment.apply')</button>
+                                 </span>
+                                </div>
+                            </form>
+                        @endif
+                    </td>
                 </tr>
             </table>
         </div>

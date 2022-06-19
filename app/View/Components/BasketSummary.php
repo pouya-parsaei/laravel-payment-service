@@ -3,6 +3,7 @@
 namespace App\View\Components;
 
 use App\Support\Basket\Basket;
+use App\Support\Cost\Contracts\CostInterface;
 use Illuminate\View\Component;
 
 class BasketSummary extends Component
@@ -12,7 +13,7 @@ class BasketSummary extends Component
      *
      * @return void
      */
-    public function __construct(public Basket $basket)
+    public function __construct(public CostInterface $cost)
     {
         //
     }

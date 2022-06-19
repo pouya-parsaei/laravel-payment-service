@@ -11,7 +11,7 @@ interface GatewayInterface
     const TRANSACTION_SUCCESS = 'transaction.success';
     const TRANSACTION_FAILED = 'transaction.failed';
 
-    public function pay(Order $order);
+    public function pay(Order $order, int $amount);
 
     public function verify(Request $request);
 
